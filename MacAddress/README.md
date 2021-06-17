@@ -1,1 +1,1 @@
-Script para verificar a MAS adrress de um ESP32
+Script para verificar a MAC adrress de um ESP32
