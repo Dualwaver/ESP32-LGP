@@ -6,13 +6,19 @@ typedef struct message{
   fingerData_t finger[5];
 } message_t;
 
-typedef int8_t finger_t;
+typedef enum{ 
+  THUMB, 
+  INDEX, 
+  MIDDLE, 
+  RING, 
+  PINKY
+} finger_t;
 
-#define FINGER_THUMB    0   /* dedo pulgar */
-#define FINGER_INDEX    1   /* dedo indicador */
-#define FINGER_MIDDLE   2   /* dedo do meio */
-#define FINGER_RING     3   /* dedo anelar */
-#define FINGER_PINKY    4   /* dedo mindinho */
+// #define FINGER_THUMB    0   /* dedo pulgar */
+// #define FINGER_INDEX    1   /* dedo indicador */
+// #define FINGER_MIDDLE   2   /* dedo do meio */
+// #define FINGER_RING     3   /* dedo anelar */
+// #define FINGER_PINKY    4   /* dedo mindinho */
 
 typedef struct fingerData{
   float ax;

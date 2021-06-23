@@ -15,6 +15,7 @@
 
   // #others
   bool print = false;
+  int time;
 
 // End of Global Variables
 
@@ -47,11 +48,13 @@ void setup() {
   }  
 }
 
-void loop() {
-  if(print){
+void loop(){
+  pid_t retfork = fork();
+  if (retfork = 0){
+    Serial.println("Esta porcaria funciona\n");
 
   }
-
+  
 }
 
 /*============ 
@@ -62,9 +65,14 @@ void loop() {
   * @brief Callback function fo when data is received
   */
   void OnDataReceive(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
-    fingerData_t rcvData;
+    message_t rcvData;
     memcpy(&rcvData,data,sizeof(rcvData));
     Serial.println("\nLast Packet Received Content:");
+    for( int i = 0; i < rcvData.; i++)
+    {
+      /* code */
+    }
+    
     Serial.print("MPU:");
     Serial.println(rcvData.finger);
     Serial.print(rcvData.ax,4);
