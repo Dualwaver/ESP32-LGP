@@ -42,8 +42,6 @@ void setup() {
   Serial.begin(115200);
   /* Init */
   initEspNow(OnDataReceive,OnDataSent);
-  Serial.print("\n Msg size:");
-  Serial.println(sizeof(msg));
 
   /* Create peer */
   //todo: tentar encapsular esta parte numa função. @brief Creates & defines the peer address, comunication channel and encription
@@ -100,7 +98,7 @@ void loop() {
   * @brief Callback function fo when data is received
   */
   void OnDataReceive(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
-    struct message recvMsg;
+    message_t recvMsg;
     memcpy(&recvMsg,data,sizeof(recvMsg));
     // memcpy(&ledState, data, sizeof(bool));
     Serial.println("\nLast Packet Received Content:");

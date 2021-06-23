@@ -26,9 +26,21 @@ void initEspNow(esp_now_recv_cb_t rcb, esp_now_send_cb_t scb){
 /**
   * @brief Sends a message to the known peer
   * @param peer_addr peer MAC address
-  * @param msg data struct to be sent
+  * @param msg message_t data struct to be sent
 */
 void sendMsg(const uint8_t *peer_addr, message_t msg){
+  if (esp_now_send(peer_addr,(uint8_t *) &msg,sizeof(msg)) != ESP_OK)
+    Serial.println("\nError sending the data");
+  else
+    Serial.println("\nSent with Success");
+}
+
+/**
+  * @brief Sends a message to the known peer
+  * @param peer_addr peer MAC address
+  * @param msg fingerData_t data struct to be sent
+*/
+void sendFinger(const uint8_t *peer_addr, fingerData_t msg){
   if (esp_now_send(peer_addr,(uint8_t *) &msg,sizeof(msg)) != ESP_OK)
     Serial.println("\nError sending the data");
   else
