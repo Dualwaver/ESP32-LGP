@@ -11,11 +11,11 @@
  * Global Variables * 
  ===================*/
   // # ESP32 to peer MAC address
-  const uint8_t peerAddress[] = {0xAC, 0x67, 0xB2, 0x2B, 0xDA, 0x60}; 
+  const uint8_t peerAddress[] = {0x3C, 0x61, 0x05, 0x13, 0x70, 0x20}; 
 
   // #others
   bool print = false;
-  int time;
+  int t = 0;
 
 // End of Global Variables
 
@@ -23,7 +23,7 @@
  * Functions declaration * 
  ========================*/ 
   
-  void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
+  //void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
   
   void OnDataReceive(const uint8_t *mac_addr, const uint8_t *data, int data_len);
 
@@ -46,14 +46,11 @@ void setup() {
     Serial.println("Failed to add peer");
     return;
   }  
+  Serial.println(WiFi.macAddress());
+  Serial.println("Comunication start");
 }
 
 void loop(){
-  pid_t retfork = fork();
-  if (retfork = 0){
-    Serial.println("Esta porcaria funciona\n");
-
-  }
   
 }
 
@@ -67,20 +64,18 @@ void loop(){
   void OnDataReceive(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     message_t rcvData;
     memcpy(&rcvData,data,sizeof(rcvData));
-    Serial.println("\nLast Packet Received Content:");
-    for( int i = 0; i < rcvData.; i++)
-    {
-      /* code */
+    Serial.print("\nLast Packet Received Content:");
+    for( int i = 0; i < 3; i++){
+      Serial.print("MPU:");
+      Serial.println(i);
+      Serial.print(rcvData.ax,4);
+      Serial.print(",");
+      Serial.print(rcvData.ay,4);
+      Serial.print(",");
+      Serial.println(rcvData.az,4);
+      Serial.println("");
     }
     
-    Serial.print("MPU:");
-    Serial.println(rcvData.finger);
-    Serial.print(rcvData.ax,4);
-    Serial.print(",");
-    Serial.print(rcvData.ay,4);
-    Serial.print(",");
-    Serial.println(rcvData.az,4);
-    Serial.println("");
     Serial.print("Bytes received: ");
     Serial.println(data_len);
   }
