@@ -18,9 +18,9 @@ typedef enum{
 // #define FINGER_PINKY    4   /* dedo mindinho */
 
 typedef struct messsage{
-  float ax;
-  float ay;
-  float az;
+  float x;
+  float y;
+  float z;
   //location_t finger;
 }message_t;
 
