@@ -21,7 +21,7 @@ typedef struct messsage{
   float x;
   float y;
   float z;
-  //location_t finger;
+  location_t local;
 }message_t;
 
 
