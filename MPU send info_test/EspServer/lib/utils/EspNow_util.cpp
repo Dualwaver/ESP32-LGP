@@ -29,7 +29,7 @@ void initEspNow(esp_now_recv_cb_t rcb, esp_now_send_cb_t scb){
   * @param msg message_t data struct to be sent
 */
 void sendMsg(const uint8_t *peer_addr, message_t *msg){
-  if (esp_now_send(peer_addr,(uint8_t *) msg,sizeof(message_t)) != ESP_OK)
+  if (esp_now_send(peer_addr,(uint8_t *) msg,sizeof(*msg)) != ESP_OK)
     Serial.println("\nError sending the data");
   else
     Serial.println("\nSent with Success");

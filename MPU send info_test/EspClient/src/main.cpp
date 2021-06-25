@@ -11,7 +11,8 @@
  * Global Variables * 
  ===================*/
   // # ESP32 to peer MAC address
-  const uint8_t peerAddress[] = {0x3C, 0x61, 0x05, 0x13, 0x70, 0x20}; 
+  const uint8_t peerAddress[] = {0x3C, 0x61, 0x05, 0x13, 0x70, 0x20}; //->ESPPreto Vasco
+  //const uint8_t peerAddress[] = {0xAC, 0x67, 0xB2, 0x2B, 0xDA, 0x60}; //-> ESPAmarelo
 
   // #others
   bool print = false;
@@ -51,7 +52,7 @@ void setup() {
 }
 
 void loop(){
-  
+  delay(100);
 }
 
 /*============ 
@@ -64,20 +65,26 @@ void loop(){
   void OnDataReceive(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     message_t rcvData;
     memcpy(&rcvData,data,sizeof(rcvData));
-    Serial.print("\nLast Packet Received Content:");
-    for( int i = 0; i < 3; i++){
-      Serial.print("MPU:");
-      Serial.println(i);
-      Serial.print(rcvData.ax,4);
-      Serial.print(",");
-      Serial.print(rcvData.ay,4);
-      Serial.print(",");
-      Serial.println(rcvData.az,4);
-      Serial.println("");
-    }
+    Serial.print("\nLast Packet Received Content:\n");
+    //for( int i = 0; i < 3; i++){
+    Serial.print("MPU:");
+    Serial.print(rcvData.x,4);
+    Serial.print(",");
+    Serial.print(rcvData.y,4);
+    Serial.print(",");
+    Serial.println(rcvData.z,4);
+    Serial.print("Dedo: ");
+    Serial.println(rcvData.local);
     
     Serial.print("Bytes received: ");
     Serial.println(data_len);
   }
+
+  // void OnDataReceive(const uint8_t *mac_addr, const uint8_t *data, int data_len){
+  //   int rcvData;
+  //   memcpy(&rcvData,data,sizeof(rcvData));
+  //   Serial.print("Valor recebido:");
+  //   Serial.println(rcvData);
+  // }
 
 // End of Functions
