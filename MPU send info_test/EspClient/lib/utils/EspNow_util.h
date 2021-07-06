@@ -19,4 +19,6 @@ void initEspNow(esp_now_recv_cb_t rcb, esp_now_send_cb_t scb);
 */
 void sendMsg(const uint8_t *peer_addr, message_t *msg);
 
+esp_now_peer_info_t peerCreate( uint8_t* peerAddress);
+
 #endif

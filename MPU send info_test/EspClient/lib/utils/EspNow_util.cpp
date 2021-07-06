@@ -23,6 +23,16 @@ void initEspNow(esp_now_recv_cb_t rcb, esp_now_send_cb_t scb){
     esp_now_register_send_cb(scb);  
 }
 
+esp_now_peer_info_t peerCreate( uint8_t* peerAddress){
+  esp_now_peer_info_t* peerInfo = (esp_now_peer_info_t*) malloc(sizeof(esp_now_peer_info_t));
+  //Serial.println(sizeof(peerAddress)/sizeof(peerAddress[0]));
+  //memcpy(peerInfo->peer_addr,peerAddress,sizeof(peerAddress)/sizeof(peerAddress[0]));
+  memcpy(peerInfo->peer_addr,peerAddress,ESP_NOW_ETH_ALEN);
+  peerInfo->channel = 0;
+  peerInfo->encrypt = false;
+  return *peerInfo;
+}
+
 /**
   * @brief Sends a message to the known peer
   * @param peer_addr peer MAC address
