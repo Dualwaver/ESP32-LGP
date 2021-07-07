@@ -1,0 +1,73 @@
+#include <Arduino.h>
+#include <BLEDevice.h>
+#include <BLEClient.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+
+// Server address
+#define SERVER_ADDRESS "08:3A:F2:8F:AG:BE"
+
+// #BLE Variables
+BLEClient* client = NULL;
+static BLERemoteCharacteristic* pRemoteCharacteristic;
+static BLEAdvertisedDevice* myDevice;
+// The remote service we wish to connect to.
+static BLEUUID serviceUUID("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+// Minute characteristic of the remote service we are interested in.
+static BLEUUID    minCharUUID("beb5483e-36e1-4688-b7f5-ea07361b26a8");
+// Second characteristic of the remote service we are interested in.
+static BLEUUID    secCharUUID("16d3930d-2523-4e25-bee8-86c84708b63c");
+
+//Function counter variables
+bool serverConnection = false;
+char buffer[20],buf_min[10],buf_sec[10];//time, min and sec buffers
+int mint = 0, sec = 0, t = 0;
+bool print = false;
+
+void counter(){
+  print = false;
+  if ((millis()-t) == 1000){
+    t = millis();
+    sec++;
+    print = true;
+  }
+  if (sec == 60){
+    sec = 0;
+    mint++;
+  }
+  if(millis() == 1000)
+    t = millis();
+  
+  sprintf(buf_min, "%d min",mint);
+  sprintf(buf_sec, "%d sec",sec);
+  sprintf(buffer, "%s %s",buf_min,buf_sec);
+}
+
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+  //Initialize the BLE
+  BLEDevice::init("ESP32 Client");
+  //Create the client
+  client = BLEDevice::createClient();
+  //Createw address
+  BLEAddress Address (SERVER_ADDRESS);
+  //Connect the client to the server
+  client->connect(Address);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  counter();
+  if (print){
+    Serial.print("time: ");
+    Serial.println(buffer);
+  }
+  if (print && serverConnection){
+      // minutes->setValue(buf_min);
+      // minutes->notify();
+      // seconds->setValue(buf_sec);
+      // seconds->notify();
+    }
+}
