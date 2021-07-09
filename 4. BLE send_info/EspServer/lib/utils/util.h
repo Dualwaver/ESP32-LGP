@@ -18,5 +18,4 @@ typedef struct messsage{
   location_t local;
 }message_t;
 
-
 #endif
