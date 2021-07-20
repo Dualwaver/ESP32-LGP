@@ -1,4 +1,3 @@
-
 #include <Arduino.h>
 #include "../lib/utils/BLE_util.h"
 #include "../lib/utils/EspNow_util.h"
