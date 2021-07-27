@@ -45,13 +45,14 @@
   class CharactCallbacks: public BLECharacteristicCallbacks{
     void onRead(BLECharacteristic* pCharacteristic){
       // do stuff here on read
-      Serial.println("Characteristic has been read");
+      Serial.println("Characteristic has been read\n");
     }
 
 	  void onWrite(BLECharacteristic* pCharacteristic){
       // do stuff here on write
       Serial.println("Characteristic has been writen");
       std::string rcvString = pCharacteristic->getValue();
+      Serial.println(rcvString.c_str());
       strcmp(rcvString.c_str(),"on") == 0 ? ledState = true : ledState = false;
       changeState = true;  
     }
@@ -91,6 +92,7 @@ void setup() {
                                                                    BLECharacteristic::PROPERTY_READ);
   pLedChange->addDescriptor(new BLE2902());
   pLedChange->setCallbacks(new CharactCallbacks());
+  pLedChange->setValue((char*)"off");
 
   // Start the service
   pService->start();
@@ -102,11 +104,11 @@ void setup() {
   pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
   BLEDevice::startAdvertising();
 
-  Serial.println("\nWaiting a client connection to notify...");
+  Serial.println("\nWaiting a client connection...");
 
   pinMode(ledPin,OUTPUT);
   Serial.print("Led state: ");
-  Serial.println(ledState ? "on" : "off");
+  Serial.println(ledState ? "on\n" : "off\n");
   
 }
 
@@ -114,7 +116,7 @@ void loop(){
 
   if(deviceConnected  && changeState){
     Serial.print("Led state: ");
-    Serial.println(ledState ? "on" : "off");
+    Serial.println(ledState ? "on\n" : "off\n");
     digitalWrite(ledPin,ledState);
     changeState = false;
   }
@@ -123,7 +125,9 @@ void loop(){
   if (!deviceConnected && oldDeviceConnected) {
     delay(500); // give the bluetooth stack the chance to get things ready
     pServer->startAdvertising(); // restart advertising
-    Serial.println("start advertising");
+    Serial.println("start advertising...");
+    digitalWrite(ledPin,LOW);
+    Serial.println("Led state: off\n");
     oldDeviceConnected = deviceConnected;
   }
   
