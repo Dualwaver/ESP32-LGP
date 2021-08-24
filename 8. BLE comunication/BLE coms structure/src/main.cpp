@@ -8,13 +8,16 @@
 #include "Wire.h"
 
 #define LED                2
-#define BLE_SEND_SIZE      sizeof(float)*3
+#define NUMB_OF_SENSORS    1
+#define BLE_SEND_SIZE      sizeof(float)*3*NUMB_OF_SENSORS + NUMB_OF_SENSORS
+                          //Sensor information(a.x,a.u,a.z) + sensor position and location description
 #define CUSTOM_SERVICE     "544b335f-aa69-4be8-aef4-ca32a9867832"
 #define LED_CHARACTERISTIC "e8695a15-7f64-4432-89af-2e42054399bb"
 #define MPU_CHARACTERISTIC "27e57d1e-3941-4045-97c5-dbb7981a4434"
 #define TCAADDR 0x70
 
 Adafruit_MPU6050 mpu;
+
 //sensor events
 sensors_event_t a, g;
 
@@ -37,15 +40,21 @@ uint8_t *send = (uint8_t*) malloc(sizeof(float)*3);
 
 /****************  Função para passar floats para bytes   ********************/
 void messageToUint8 (sensors_event_t *acl, uint8_t *send){
-  memset(send,0,sizeof(float)*3); // make sure the array is clear
+  memset(send,0,BLE_SEND_SIZE); // make sure the array is clear
+  uint8_t val = 0xFF;
   for (size_t i = 0; i < BLE_SEND_SIZE; i += 4){
     if (i < 4)
       memcpy(&send[i],&acl->acceleration.x,sizeof(float));
     else if(i < 8)
       memcpy(&send[i],&acl->acceleration.y,sizeof(float));
-    else
+    else if(i < 12)
       memcpy(&send[i],&acl->acceleration.z,sizeof(float));
+    else
+      memcpy(&send[i],&val,sizeof(uint8_t));  
   }
+  Serial.printf("Message Sent:\n");
+  for (size_t i = 0; i < BLE_SEND_SIZE; i++)
+    i == BLE_SEND_SIZE - 1 ? Serial.printf("%X\n",send[i]) : Serial.printf("%X-", send[i]); 
 }
 
 BLEServer *pServer;
@@ -83,11 +92,12 @@ class MyCharacteristicCallbacks: public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200);
   pinMode(LED, OUTPUT);
+  digitalWrite(LED,HIGH);
 
   bus1.begin(21,22,100000);
 
   // Create the BLE Device
-  BLEDevice::init("It's me ESP32");
+  BLEDevice::init("ESP32");
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
@@ -102,6 +112,7 @@ void setup() {
   
   //Create the BLE Characteristic for MPU6050 and descriptor to allow notifications
   mpuCharacteristic = pService->createCharacteristic(MPU_CHARACTERISTIC, BLECharacteristic::PROPERTY_NOTIFY);
+
   mpuCharacteristic->addDescriptor(new BLE2902());
 
   // add a BLE Characteristics
@@ -119,7 +130,7 @@ void setup() {
   pServer->getAdvertising()->start();
 
   /**** Setup do MPU ****/
-  tcaselect(4);
+  //tcaselect(4);
   while(!mpu.begin(0x69)){
       Serial.println("Failed to find MPU6050 chip");
       delay(10);
@@ -132,18 +143,21 @@ void setup() {
 }
 
 void loop() {
-  tcaselect(4);
+  //tcaselect(4);
   mpu.getEvent(&a, &g, NULL);
+  
   /* Print acelerómetro */
+  Serial.println("\nM'PU:");
   Serial.print(a.acceleration.x,4);
   Serial.print(",");
   Serial.print(a.acceleration.y,4);
   Serial.print(",");
   Serial.println(a.acceleration.z,4);
-  Serial.print("\n");
+  //Serial.print("\n");
 
   messageToUint8(&a, send);
-  mpuCharacteristic->setValue( send, sizeof(float)*3);
+  //delay(500);
+  mpuCharacteristic->setValue( send, BLE_SEND_SIZE);
   mpuCharacteristic->notify();
 
   if(advert && !connected) {
